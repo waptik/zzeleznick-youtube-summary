@@ -2,6 +2,14 @@
   "version": "2",
   "remote": {
     "https://deno.land/std@0.184.0/_util/asserts.ts": "178dfc49a464aee693a7e285567b3d0b555dc805ff490505a8aae34f9cfb1462",
-    "https://deno.land/std@0.184.0/flags/mod.ts": "4d829c5bd1d657799cdeb487c6e418960efc6f4d8ce6cadc38a54b9ce266160a"
+    "https://deno.land/std@0.184.0/flags/mod.ts": "4d829c5bd1d657799cdeb487c6e418960efc6f4d8ce6cadc38a54b9ce266160a",
+    "https://esm.sh/@dqbd/tiktoken@1.0.7/lite": "4968fb1890b105ba6b18ed220faeb89d3a15d1719557c3fd895700105f64a604",
+    "https://esm.sh/@dqbd/tiktoken@1.0.7/lite/init": "fac0628a57c5230bfb0c6e89a0d265b1103f4dad852e28d7e96dd2516173f233",
+    "https://esm.sh/@dqbd/tiktoken@1.0.7/load": "a38844a5796112dbb1cacd70c9f95b00e2b0aabdad5ccca095186f873efc18d6",
+    "https://esm.sh/@dqbd/tiktoken@1.0.7/model_to_encoding.json": "f3b4549d0768b76f5e4fd4a999a8730382f1bdee50e1bf0ae9b05274e371b1de",
+    "https://esm.sh/@dqbd/tiktoken@1.0.7/registry.json": "b5f8712c1ad79f80d0c91810a0b56d1738537ba9f20dd7715791290c9047742c",
+    "https://esm.sh/v125/@dqbd/tiktoken@1.0.7/denonext/lite.js": "d78b94b377a06b7e29f226e018e798edbfce3a6f4db9413987bd4ee2476dd4fa",
+    "https://esm.sh/v125/@dqbd/tiktoken@1.0.7/denonext/lite/init.js": "49af8d33804458d4d7246bb618b81ac70d0708c8a11fcfdfface927f98141a0a",
+    "https://esm.sh/v125/@dqbd/tiktoken@1.0.7/denonext/load.js": "18e3e4f34257573a4a156172470bcacb5ca8930ee3fda28a8d0979497e5eb02a"
   }
 }
