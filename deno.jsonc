@@ -1,0 +1,6 @@
+{
+  "tasks": {
+    "dev": "deno run --watch main.ts",
+    "demo": "deno run --allow-net main.ts"
+  }
+}
