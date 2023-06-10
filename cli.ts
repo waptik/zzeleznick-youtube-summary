@@ -3,15 +3,24 @@ import { YoutubeTranscript } from "./main.ts";
 
 const flags = parse(Deno.args, {
   string: ["url", "lang", "country"],
-  default: { lang: "en", country: "US" },
+  boolean: ["metadata"],
+  default: { lang: "en", country: "US", metadata: false },
 });
 
 const url = flags.url || Deno.args[0];
 
 const config = {
-    lang: flags.lang,
-    country: flags.country,
+  lang: flags.lang,
+  country: flags.country,
 };
 
-const transcript = await YoutubeTranscript.fetchTranscript(url, config);
-console.log(JSON.stringify(transcript, null, 2));
+let out = "";
+
+if (flags.metadata) {
+  const transcript = await YoutubeTranscript.fetchTranscript(url, config);
+  out = JSON.stringify(transcript, null, 2);
+} else {
+  out = await YoutubeTranscript.fetchTranscriptText(url, config);
+}
+
+console.log(out);

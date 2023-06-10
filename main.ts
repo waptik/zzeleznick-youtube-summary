@@ -26,7 +26,7 @@ export interface TranscriptConfig {
   country?: string;
 }
 
-export interface TranscriptText {
+export interface TranscriptSegment {
   text: string;
   duration: number;
   offset: number;
@@ -82,19 +82,19 @@ export interface TranscriptData {
 }
 
 /**
- * Class to retrieve transcript if exist
+ * An extensible class to fetch a transcript from a given YouTube Video
  */
 export class YoutubeTranscript {
   /**
-   * Fetch transcript from YouTube Video
+   * Fetch a transcript from a YouTube Video which includes the text and timestamp metadata
    * @param videoId Video url or video identifier
-   * @param config Get transcript in another country and language ISO
+   * @param config Options for specifying a Country and Language ISO
    */
-  public static async fetchTranscript(
+  static async fetchTranscript(
     videoId: string,
     config?: TranscriptConfig,
-  ): Promise<TranscriptText[]> {
-    const identifier = this.retrieveVideoId(videoId);
+  ): Promise<TranscriptSegment[]> {
+    const identifier = this.extractVideoId(videoId);
     try {
       const textResponse = await fetch(
         `https://www.youtube.com/watch?v=${identifier}`,
@@ -122,22 +122,46 @@ export class YoutubeTranscript {
         );
       }
       const transcriptData = await transcriptResponse.json();
-      const { actions = [] } = transcriptData as TranscriptData;
-      const cueGroups =
-        actions[0]?.updateEngagementPanelAction.content.transcriptRenderer.body
-          .transcriptBodyRenderer.cueGroups;
-      return cueGroups.map((cueGroup) => {
-        const { cue, durationMs, startOffsetMs } =
-          cueGroup.transcriptCueGroupRenderer.cues[0].transcriptCueRenderer;
-        return {
-          text: cue.simpleText,
-          duration: parseInt(durationMs),
-          offset: parseInt(startOffsetMs),
-        };
-      });
-    } catch (e) {
-      throw new YoutubeTranscriptError(e);
+      return this.parseTranscriptData(transcriptData as TranscriptData);
+    } catch (err) {
+      throw new YoutubeTranscriptError(err);
     }
+  }
+  /**
+   * Fetch only the transcript text from a YouTube Video
+   * @param videoId Video url or video identifier
+   * @param config Options for specifying a Country and Language ISO
+   */
+  static async fetchTranscriptText(
+    videoId: string,
+    config?: TranscriptConfig,
+  ): Promise<string> {
+    const segments = await this.fetchTranscript(videoId, config);
+    let out = "";
+    for (const { text } of segments) {
+      out += `${text} `;
+    }
+    return out.trimEnd();
+  }
+
+  /**
+   * Parse TranscriptData from the "get_transcript" endpoint
+   * @param transcriptData TranscriptData returned by the "get_transcript" endpoint
+   */
+  static parseTranscriptData(transcriptData: TranscriptData) {
+    const { actions = [] } = transcriptData;
+    const cueGroups =
+      actions[0]?.updateEngagementPanelAction.content.transcriptRenderer.body
+        .transcriptBodyRenderer.cueGroups;
+    return cueGroups.map((cueGroup) => {
+      const { cue, durationMs, startOffsetMs } =
+        cueGroup.transcriptCueGroupRenderer.cues[0].transcriptCueRenderer;
+      return {
+        text: cue.simpleText,
+        duration: parseInt(durationMs),
+        offset: parseInt(startOffsetMs),
+      };
+    });
   }
 
   /**
@@ -190,10 +214,35 @@ export class YoutubeTranscript {
     };
   }
 
+  /**
+   * Extract value from html page based on required key
+   * @param page html page
+   * @param key key name
+   */
   static extractValue(page: string, key: YouTubeKeyRaw) {
     return page.split(`"${key}":"`)[1]?.split(`"`)[0];
   }
 
+  /**
+   * Extract video id from url or string
+   * @param videoId video url or video id
+   */
+  static extractVideoId(videoId: string) {
+    if (videoId.length === 11) {
+      return videoId;
+    }
+    const matchId = videoId.match(RE_YOUTUBE);
+    if (matchId && matchId.length) {
+      return matchId[1];
+    }
+    throw new YoutubeTranscriptError(
+      "Malformed YouTube video url or ID.",
+    );
+  }
+
+  /**
+   * Generate nonce for clientScreenNonce as part of YouTube API
+   */
   static generateNonce() {
     const rnd = Math.random().toString();
     const alphabet =
@@ -242,23 +291,6 @@ export class YoutubeTranscript {
       d += 3;
     }
     return c;
-  }
-
-  /**
-   * Retrieve video id from url or string
-   * @param videoId video url or video id
-   */
-  static retrieveVideoId(videoId: string) {
-    if (videoId.length === 11) {
-      return videoId;
-    }
-    const matchId = videoId.match(RE_YOUTUBE);
-    if (matchId && matchId.length) {
-      return matchId[1];
-    }
-    throw new YoutubeTranscriptError(
-      "Malformed YouTube video ID.",
-    );
   }
 }
 
