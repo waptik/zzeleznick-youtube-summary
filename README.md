@@ -1,5 +1,5 @@
-## YouTube Transcript
+## 🦕 YouTube Summarizer
 
-Fetch the YouTube Transcript from a given youtube video url
+Create a short summary from a YouTube video.
 
-Adapted from https://www.npmjs.com/package/youtube-transcript for deno
+Built with Deno 🦕.

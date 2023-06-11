@@ -296,7 +296,6 @@ export class YoutubeTranscript {
 
 if (import.meta.main) {
   const url = "https://www.youtube.com/watch?v=46IEp7_mpdw";
-  console.log(`Going to fetch example transcript for url: ${url}`);
   const transcript = await YoutubeTranscript.fetchTranscript(url);
   console.log(JSON.stringify(transcript, null, 2));
 }
