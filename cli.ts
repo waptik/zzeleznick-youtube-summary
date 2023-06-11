@@ -1,10 +1,16 @@
 import { parse } from "https://deno.land/std@0.184.0/flags/mod.ts";
 import { YoutubeTranscript } from "./main.ts";
-
+import { splitText, AIAgent} from "./extra.ts";
+  
 const flags = parse(Deno.args, {
   string: ["url", "lang", "country"],
-  boolean: ["metadata"],
-  default: { lang: "en", country: "US", metadata: false },
+  boolean: ["metadata", "summarize"],
+  default: { 
+    lang: "en",
+    country: "US",
+    metadata: false,
+    summarize: false,
+  },
 });
 
 const url = flags.url || Deno.args[0];
@@ -21,6 +27,16 @@ if (flags.metadata) {
   out = JSON.stringify(transcript, null, 2);
 } else {
   out = await YoutubeTranscript.fetchTranscriptText(url, config);
+}
+
+if (flags.summarize) {
+  const texts = await splitText(out);
+  let summaryBatch = texts;
+  if (texts.length > 1) {
+    summaryBatch = await AIAgent.summarizeBatch(texts);
+  }
+  // TODO: enable additional rounds of split + summarize runs instead of assuming max of 1 compression pass
+  out = await AIAgent.summarize(summaryBatch.join("\n"), undefined, "detailed tldr;");
 }
 
 console.log(out);

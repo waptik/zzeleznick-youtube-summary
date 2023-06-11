@@ -2,6 +2,6 @@
   "tasks": {
     "dev": "deno run --watch main.ts",
     "demo": "deno run --allow-net main.ts",
-    "cli": "deno run --allow-net cli.ts"
+    "cli": "deno run --allow-net --allow-env cli.ts"
   }
 }

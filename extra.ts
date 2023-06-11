@@ -14,7 +14,7 @@ type Registry = Record<Encoder, EncoderConfig>;
 
 let _init = false;
 
-class Tokenizer {
+export class Tokenizer {
     static _encoder: Tiktoken;
     static async tokenize(text: string, modelName?: Model) {
         if (!this._encoder) {
@@ -24,7 +24,7 @@ class Tokenizer {
     }
 }
 
-class AIAgent {
+export class AIAgent {
     static _openAI: OpenAIApi;
     static OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY")!;
 
@@ -108,10 +108,7 @@ class AIAgent {
     }
 
     static async summarizeBatch(texts: string[], modelName?: Model) {
-        const summaries = await Promise.all(texts.map(text => this.summarize(text, modelName)));
-        // MARK: unify into one summary
-        // console.log(JSON.stringify(summaries))
-        return summaries
+        return await Promise.all(texts.map(text => this.summarize(text, modelName)));
     }
 }
 
@@ -151,7 +148,7 @@ function* batchify<T>(arr: T[], n = 5): Generator<T[], void> {
     }
 }
 
-async function splitText(text: string, maxTokens = 2048) {
+export async function splitText(text: string, maxTokens = 2048) {
     const separator = " ";
     const wordGroups = batchify(text.split(`${separator}`), 50);
     const finalChunks: string[] = [];
