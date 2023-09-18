@@ -1,5 +1,5 @@
 import { parse } from "https://deno.land/std@0.184.0/flags/mod.ts";
-import { YoutubeTranscript } from "./main.ts";
+import { YoutubeTranscript } from "./yt.ts";
 import { splitText, AIAgent} from "./extra.ts";
   
 const flags = parse(Deno.args, {
