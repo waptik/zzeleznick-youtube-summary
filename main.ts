@@ -300,6 +300,6 @@ if (import.meta.main) {
     const transcript = await YoutubeTranscript.fetchTranscript(url);
     console.log(JSON.stringify(transcript, null, 2));
 
-    return new Response("Hello World"));
-  }
+    return new Response("Hello World");
+  });
 }
