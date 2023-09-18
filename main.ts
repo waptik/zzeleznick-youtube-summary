@@ -295,7 +295,11 @@ export class YoutubeTranscript {
 }
 
 if (import.meta.main) {
-  const url = "https://www.youtube.com/watch?v=46IEp7_mpdw";
-  const transcript = await YoutubeTranscript.fetchTranscript(url);
-  console.log(JSON.stringify(transcript, null, 2));
+  Deno.serve((req: Request) => {
+    const url = "https://www.youtube.com/watch?v=46IEp7_mpdw";
+    const transcript = await YoutubeTranscript.fetchTranscript(url);
+    console.log(JSON.stringify(transcript, null, 2));
+
+    return new Response("Hello World"));
+  }
 }
