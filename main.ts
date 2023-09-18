@@ -295,7 +295,7 @@ export class YoutubeTranscript {
 }
 
 if (import.meta.main) {
-  Deno.serve((req: Request) => {
+  Deno.serve(async (req: Request) => {
     const url = "https://www.youtube.com/watch?v=46IEp7_mpdw";
     const transcript = await YoutubeTranscript.fetchTranscript(url);
     console.log(JSON.stringify(transcript, null, 2));
